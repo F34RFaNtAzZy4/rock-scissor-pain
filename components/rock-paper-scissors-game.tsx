@@ -2,8 +2,15 @@
 
 import { useState, useEffect } from "react"
 import { Scissors, Hand, Cloud } from "lucide-react"
+import axios from "axios";
 
 type Choice = "rock" | "paper" | "scissors" | null
+
+const API_IP = "172.27.73.85:5000";
+
+const shockPlayer = async (player: 1 | 2) => {
+  await axios.post(`http://${API_IP}/error${player === 1 ? "" : "2"}`);
+}
 
 export default function RockPaperScissorsGame() {
   const [leftChoice, setLeftChoice] = useState<Choice>(null)
@@ -30,8 +37,19 @@ export default function RockPaperScissorsGame() {
           (leftChoice === "paper" && rightChoice === "rock") ||
           (leftChoice === "scissors" && rightChoice === "paper")
         ) {
+          try{
+            shockPlayer(2);
+          }catch(e){
+            console.log("Error while shocking player 2", e);
+          }
           setResult("LEFT WINS")
+
         } else {
+          try{
+            shockPlayer(1);
+          }catch(e){
+            console.log("Error while shocking player 1", e);
+          }
           setResult("RIGHT WINS")
         }
         setShowResult(true)
